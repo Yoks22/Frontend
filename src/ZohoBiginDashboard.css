@@ -1,0 +1,239 @@
+/* ===============================
+   GLOBAL
+================================ */
+body {
+  background: #0b0d10;
+  color: #e5e7eb;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+.mb-root {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+/* ===============================
+   TOP BAR
+================================ */
+.mb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 18px;
+}
+
+.mb-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.mb-sub {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ===============================
+   MAIN GRID
+================================ */
+.mb-two-col {
+  display: grid;
+  grid-template-columns: 220px 1fr 360px;
+  gap: 18px;
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+.mb-nav {
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: transparent;
+  color: #9ca3af;
+  border: none;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: #171b22;
+  color: #fff;
+}
+
+.chip.active {
+  background: rgba(230, 57, 70, 0.12);
+  color: #e63946;
+  box-shadow: inset 0 0 0 1px rgba(230,57,70,.4);
+}
+
+/* ===============================
+   DASHBOARD CARDS
+================================ */
+.mb-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 16px;
+  padding: 18px;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.6);
+}
+
+.card-title {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+/* ===============================
+   MODULE TABLE
+================================ */
+.glass-table-wrap {
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.glass-table th {
+  background: #171b22;
+  color: #9ca3af;
+  font-size: 12px;
+  text-align: left;
+  padding: 12px;
+}
+
+.glass-table td {
+  padding: 12px;
+  border-top: 1px solid #232837;
+  font-size: 13px;
+}
+
+/* ===============================
+   RIGHT PANEL (SYNC OPS)
+================================ */
+.detail-card {
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-badge.success {
+  background: rgba(34,197,94,.15);
+  color: #22c55e;
+}
+
+.status-badge.failed {
+  background: rgba(239,68,68,.2);
+  color: #ef4444;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.btn-glow {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(230,57,70,0);
+  transition: box-shadow .25s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 22px rgba(230,57,70,.45);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #9ca3af;
+  border: 1px solid #232837;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+/* ===============================
+   SYNC MODAL
+================================ */
+.sync-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.sync-modal-card {
+  background: #12151b;
+  border: 1px solid #232837;
+  border-radius: 20px;
+  padding: 26px;
+  width: 420px;
+  text-align: center;
+}
+
+.sync-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #232837;
+  border-top-color: #e63946;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
