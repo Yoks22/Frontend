@@ -8,7 +8,7 @@ import {
 import { format, setHours, setMinutes, setSeconds, getDay, addDays } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 const IST_TIMEZONE = 'Asia/Kolkata';
 
 // --- Helper Functions for Data Simulation and Calculation ---
