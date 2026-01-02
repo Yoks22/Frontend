@@ -1,17 +1,23 @@
+// Correct for date-fns v2.30.0 (The stable version in your package.json)
+import { format, setHours, setMinutes, setSeconds, getDay, addDays } from 'date-fns';
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz'; 
+// Note: If you were using 'toZonedTime', change it to 'utcToZonedTime' for v2 compatibility.
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   RefreshCw, Database, Calendar, Users, Phone, FileText, CheckSquare, MapPin,
   AlertTriangle, Clock, X, Check, Activity, Search, FileDown, Layers, Terminal, TrendingUp,
   ChevronLeft, ChevronRight, HardDrive, Clock9, TrendingDown
 } from 'lucide-react';
-// FIX: Added 'setSeconds' to imports and removed unused 'addHours'
-import { format, setHours, setMinutes, setSeconds, getDay, addDays } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
 
+HEAD
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
+// UPDATED: Changed from import.meta.env to process.env and added Nginx proxy support
+// This pulls from your .env file. 
+// The fallback "/api" ensures it works even if the env fails to load.
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "/api";
 const IST_TIMEZONE = 'Asia/Kolkata';
 
-// --- Helper Functions for Data Simulation and Calculation ---
+// --- Helper Functions ---
 
 const getSyncMetrics = (log) => {
     const recentLog = log;
@@ -28,7 +34,7 @@ const getSyncMetrics = (log) => {
 };
 
 const apiFetch = async (url, options = {}) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // UPDATED: Removed forced setTimeout delay to prevent Connection Reset errors
     const res = await fetch(url, options);
     if (!res.ok) {
         const t = await res.text();
@@ -56,23 +62,28 @@ const downloadCSV = (data, filename) => {
     window.URL.revokeObjectURL(url);
 };
 
-// --- Timezone and Scheduling Logic (IST) ---
-
 const nextSaturday10AMIST = () => {
     const now = new Date();
-    const nowIST = toZonedTime(now, IST_TIMEZONE);
+    
+    // 1. Convert current UTC time to IST Zoned Time
+    // Changed 'toZonedTime' to 'utcToZonedTime' to fix build error
+    const nowIST = utcToZonedTime(now, IST_TIMEZONE);
+    
     const SATURDAY = 6;
     const TARGET_HOUR = 10;
 
     let currentDayIST = getDay(nowIST);
     let currentHourIST = nowIST.getHours();
 
+    // 2. Calculate days until next Saturday
     let daysToAdd = (SATURDAY - currentDayIST + 7) % 7;
 
+    // 3. If it's already Saturday after 10 AM, move to next week
     if (currentDayIST === SATURDAY && currentHourIST >= TARGET_HOUR) {
         daysToAdd = 7;
     }
 
+    // 4. Construct the next sync date
     let nextSyncTimeIST = addDays(nowIST, daysToAdd);
     nextSyncTimeIST = setHours(nextSyncTimeIST, TARGET_HOUR);
     nextSyncTimeIST = setMinutes(nextSyncTimeIST, 0);
@@ -80,7 +91,6 @@ const nextSaturday10AMIST = () => {
 
     return nextSyncTimeIST;
 };
-
 
 export default function App() {
     const [modules, setModules] = useState([]);
@@ -119,7 +129,7 @@ export default function App() {
             setTotalRecordsCount(totalAggregatedRecords);
         } catch (e) {
             console.error("Failed to load modules:", e);
-            setError(`Failed to load modules: ${e.message}`);
+            setError(`Connection Error: Ensure backend is running.`);
             setTotalRecordsCount(0);
         }
     }, []);
@@ -151,7 +161,6 @@ export default function App() {
     setError(null);
 
     try {
-        // FIX: Removed unused 'result' variable
         await apiFetch(`${API_BASE}/sync`, { method: 'POST' });
         const endTime = new Date();
         const duration = ((endTime - startTime) / 1000).toFixed(2);
@@ -213,11 +222,11 @@ export default function App() {
 
     useEffect(() => {
         loadModules();
-        const tick = () => {
-            const nowIST = toZonedTime(new Date(), IST_TIMEZONE);
-            const nextSyncTime = nextSaturday10AMIST();
-            setCountdown(Math.max(0, Math.floor((nextSyncTime.getTime() - nowIST.getTime()) / 1000)));
-        };
+const tick = () => {
+    const nowIST = utcToZonedTime(new Date(), IST_TIMEZONE); // Fixed here too
+    const nextSyncTime = nextSaturday10AMIST();
+    setCountdown(Math.max(0, Math.floor((nextSyncTime.getTime() - nowIST.getTime()) / 1000)));
+};
 
         tick();
         timerRef.current = setInterval(tick, 1000);
@@ -567,3 +576,4 @@ export default function App() {
         </div>
     );
 }
+
