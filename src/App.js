@@ -1,19 +1,12 @@
-// Correct for date-fns v2.30.0 (The stable version in your package.json)
 import { format, setHours, setMinutes, setSeconds, getDay, addDays } from 'date-fns';
-import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz'; 
-// Note: If you were using 'toZonedTime', change it to 'utcToZonedTime' for v2 compatibility.
+import { utcToZonedTime } from 'date-fns-tz';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   RefreshCw, Database, Calendar, Users, Phone, FileText, CheckSquare, MapPin,
-  AlertTriangle, Clock, X, Check, Activity, Search, FileDown, Layers, Terminal, TrendingUp,
-  ChevronLeft, ChevronRight, HardDrive, Clock9, TrendingDown
+  AlertTriangle, Clock, X, Check, Activity, Search, FileDown, Layers, Terminal,
+  TrendingUp, ChevronLeft, ChevronRight, HardDrive, Clock9, TrendingDown
 } from 'lucide-react';
 
-HEAD
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-// UPDATED: Changed from import.meta.env to process.env and added Nginx proxy support
-// This pulls from your .env file. 
-// The fallback "/api" ensures it works even if the env fails to load.
 const API_BASE = process.env.REACT_APP_API_BASE_URL || "/api";
 const IST_TIMEZONE = 'Asia/Kolkata';
 
