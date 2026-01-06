@@ -1,15 +1,24 @@
+# Stage 1: Build the React/Static app
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-# The CI=false flag is the key to fixing exit code: 1
+# Keeping your CI=false fix
 RUN CI=false npm run build
 
-FROM nginx:stable-alpine
-RUN rm -rf /usr/share/nginx/html/*
-RUN rm -f /etc/nginx/conf.d/default.conf
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Stage 2: Serve the app using a Node server
+FROM node:18-alpine
+WORKDIR /app
+
+# Install 'serve' globally to host the static build folder
+RUN npm install -g serve
+
+# Copy only the built files from the build stage
+COPY --from=build /app/build ./build
+
+# Expose port 3000 (the default for the 'serve' package)
+EXPOSE 3000
+
+# Run 'serve' on port 3000
+CMD ["serve", "-s", "build", "-l", "3000"]
