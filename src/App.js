@@ -7,7 +7,8 @@ import {
   TrendingUp, ChevronLeft, ChevronRight, HardDrive, Clock9, TrendingDown
 } from 'lucide-react';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || "/api";
+// This will look for the variable in .env, otherwise fall back to localhost
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
 const IST_TIMEZONE = 'Asia/Kolkata';
 
 // --- Helper Functions ---
