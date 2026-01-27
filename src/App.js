@@ -7,8 +7,18 @@ import {
   TrendingUp, ChevronLeft, ChevronRight, HardDrive, Clock9, TrendingDown
 } from 'lucide-react';
 
+const MODULE_API_MAP = {
+  Contacts: 'Contacts',
+  Accounts: 'Accounts',
+  Pipelines: 'Pipelines',
+  Calls: 'Calls',
+  Events: 'Events',
+  Tasks: 'Tasks',
+  Notes: 'Notes'
+};
+
 // This will look for the variable in .env, otherwise fall back to localhost
-const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "https://etl.spiotsystem.com";
 const IST_TIMEZONE = 'Asia/Kolkata';
 
 // --- Helper Functions ---
@@ -131,7 +141,11 @@ export default function App() {
     const loadRecords = useCallback(async (moduleName, p) => {
         try {
             setLoading(true);
-            const url = `${API_BASE}/${moduleName.toLowerCase()}?page=${p}`;
+            const endpoint = MODULE_API_MAP[moduleName];
+            if (!endpoint) {
+             throw new Error(`No API endpoint mapped for module ${moduleName}`);
+            }
+            const url = `${API_BASE}/${endpoint}`;
             const data = await apiFetch(url);
             const items = data.items || data.records || data.data || [];
             setRecords(items);
@@ -199,7 +213,11 @@ export default function App() {
     const handleDownload = async (moduleName) => {
         try {
             setError(null);
-            const data = await apiFetch(`${API_BASE}/${moduleName.toLowerCase()}?all=true`);
+            const endpoint = MODULE_API_MAP[moduleName];
+            if (!endpoint) {
+             throw new Error(`No API endpoint mapped for module ${moduleName}`);
+            }
+            const data = await apiFetch(`${API_BASE}/${endpoint}`);
             const items = data.items || data.records || data.data || [];
 
             if (items.length === 0) {
